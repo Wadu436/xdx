@@ -2,6 +2,7 @@
 
 #include "constants.h"
 
+#include <sstream>
 #include <iostream>
 
 LARGEINT gcd(LARGEINT n1, LARGEINT n2) {
@@ -31,6 +32,8 @@ class fraction {
         if(f.denom == 1) {
             return stream << f.num;
         }
-        return stream << f.num << " / " << f.denom;
+        std::stringstream ss;
+        ss << f.num << " / " << f.denom;
+        return stream << ss.str();
     }
 };

@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <iomanip>
 #include <algorithm>
 #include <limits>
@@ -29,7 +30,7 @@ std::ostream &operator<<(std::ostream &stream, const std::map<T1, T2>& map) {
     std::sort(key_list.begin(), key_list.end());
 
     for (auto it = key_list.begin(); it != key_list.end(); ++it) {
-        stream << *it << "\t --> \t" << map.at(*it) << "%\n";
+        stream << std::setprecision(0) << std::left << std::setfill(' ') << std::setw(16) << *it << " --> \t" << std::setprecision(20) << map.at(*it) << "%\n";
     }
     return stream;
 }
@@ -105,7 +106,7 @@ int main(int argc, char** argv) {
         std::cout << std::fixed << std::setprecision(20);
         std::cout << string_format(header, x, x, x+1, x+1, x+2, x+2);
         std::cout << probability << '\n';
-        std::cout << "Total different scenarios: " << total << '\n';
+        std::cout << std::setprecision(0) << "Total different scenarios: " << total << '\n';
     } else {
         std::cerr << "Overflow was detected, results aren't valid\n";
     }
