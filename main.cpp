@@ -30,7 +30,7 @@ std::ostream &operator<<(std::ostream &stream, const std::map<T1, T2>& map) {
     std::sort(key_list.begin(), key_list.end());
 
     for (auto it = key_list.begin(); it != key_list.end(); ++it) {
-        stream << std::setprecision(0) << std::left << std::setfill(' ') << std::setw(16) << *it << " --> \t" << std::setprecision(20) << map.at(*it) << "%\n";
+        stream << std::setprecision(0) << std::left << std::setfill(' ') << std::setw(16) << *it << " --> \t" << std::setprecision(60) << map.at(*it) << "%\n";
     }
     return stream;
 }
