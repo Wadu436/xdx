@@ -1,8 +1,10 @@
 #pragma once
 
+#include "constants.h"
+
 #include <iostream>
 
-unsigned long gcd(unsigned long n1, unsigned long n2) {
+LARGEINT gcd(LARGEINT n1, LARGEINT n2) {
     while(n1 != n2) {
         n1 > n2 ? n1 -= n2 : n2 -= n1;
     }
@@ -11,12 +13,12 @@ unsigned long gcd(unsigned long n1, unsigned long n2) {
 
 class fraction {
     private:
-    unsigned long num, denom;
+    LARGEINT num, denom;
 
     public:
     fraction() {}
-    fraction(unsigned long numerator, unsigned long denominator) {
-        unsigned long g = gcd(numerator, denominator);
+    fraction(LARGEINT numerator, LARGEINT denominator) {
+        LARGEINT g = gcd(numerator, denominator);
         num = numerator / g;
         denom = denominator / g;
     }

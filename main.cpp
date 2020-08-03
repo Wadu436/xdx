@@ -3,6 +3,7 @@
 
 // Created by Warre Dujardin
 
+#include "constants.h"
 #include "fraction.h"
 
 #include <map>
@@ -13,7 +14,7 @@
 #include <algorithm>
 #include <limits>
 
-std::numeric_limits<unsigned long> lim = {};
+std::numeric_limits<LARGEINT> lim = {};
 
 // source https://stackoverflow.com/a/18604441
 // added sorted printing
@@ -44,11 +45,11 @@ std::string string_format( const std::string& format, Args ... args )
     return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
 }
 
-bool overflow_addition(unsigned long x, unsigned long y);
-bool overflow_multiplication(unsigned long x, unsigned long y);
+bool overflow_addition(LARGEINT x, LARGEINT y);
+bool overflow_multiplication(LARGEINT x, LARGEINT y);
 
-std::map<unsigned long, unsigned long> ndx(unsigned long n, unsigned long x, bool& overflow);
-std::map<unsigned long, unsigned long> xdx(unsigned long x, bool& overflow);
+std::map<LARGEINT, LARGEINT> ndx(LARGEINT n, LARGEINT x, bool& overflow);
+std::map<LARGEINT, LARGEINT> xdx(LARGEINT x, bool& overflow);
 
 int main(int argc, char** argv) {
     if(argc < 2) {
@@ -66,13 +67,15 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    std::cout << "Using datatype which can contain numbers in the range:\n[" << lim.min() << ", " << lim.max() << "]\n\n";
+
     auto d1 = xdx(x, overflow);
     auto d2 = xdx(x+1, overflow);
     auto d3 = xdx(x+2, overflow);
 
-    auto collect = std::map<fraction, unsigned long>();
+    auto collect = std::map<fraction, LARGEINT>();
     auto probability = std::map<fraction, double>();
-    unsigned long total = 0;
+    LARGEINT total = 0;
 
     for(auto iter1 = d1.begin(); iter1 != d1.end(); iter1++) {
         for(auto iter2 = d2.begin(); iter2 != d2.end(); iter2++) {
@@ -80,7 +83,7 @@ int main(int argc, char** argv) {
                 overflow |= overflow_addition(iter1->first, iter2->first);
                 fraction key = {iter1->first + iter2->first, iter3->first};
 
-                unsigned long value = iter1->second;
+                LARGEINT value = iter1->second;
                 overflow |= overflow_multiplication(value, iter2->second);
                 value *= iter2->second;
                 overflow |= overflow_multiplication(value, iter3->second);
@@ -108,8 +111,8 @@ int main(int argc, char** argv) {
     }
 }
 
-std::map<unsigned long, unsigned long> ndx(unsigned long n, unsigned long x, bool& overflow) {
-    auto m = std::map<unsigned long, unsigned long>();
+std::map<LARGEINT, LARGEINT> ndx(LARGEINT n, LARGEINT x, bool& overflow) {
+    auto m = std::map<LARGEINT, LARGEINT>();
 
     // BASE CASE
     if(n == 0) {
@@ -119,13 +122,13 @@ std::map<unsigned long, unsigned long> ndx(unsigned long n, unsigned long x, boo
 
     auto o = ndx(n-1, x, overflow);
 
-    for(unsigned long i = 1; i <= x; i++) {
+    for(LARGEINT i = 1; i <= x; i++) {
         for(auto iter = o.begin(); iter != o.end(); iter++) {
-            unsigned long key = iter->first;
-            unsigned long value = iter->second;
+            LARGEINT key = iter->first;
+            LARGEINT value = iter->second;
 
             overflow |= overflow_addition(key, i);
-            unsigned long m_key = key + i;
+            LARGEINT m_key = key + i;
 
             overflow |= overflow_addition(m[m_key], value);
             m[m_key] += value;
@@ -135,14 +138,14 @@ std::map<unsigned long, unsigned long> ndx(unsigned long n, unsigned long x, boo
     return m;
 }
 
-std::map<unsigned long, unsigned long> xdx(unsigned long x, bool& overflow) {
+std::map<LARGEINT, LARGEINT> xdx(LARGEINT x, bool& overflow) {
     return ndx(x, x, overflow);
 }
 
-bool overflow_addition(unsigned long x, unsigned long y) {
+bool overflow_addition(LARGEINT x, LARGEINT y) {
     return (x > (lim.max() - y));
 }
 
-bool overflow_multiplication(unsigned long x, unsigned long y) {
+bool overflow_multiplication(LARGEINT x, LARGEINT y) {
     return (y !=0 && x > (lim.max() / y));
 }
